@@ -1,7 +1,10 @@
 import React from "react";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
+import {useAuth} from "../context/AuthContextProvider";
+import {ToastContainer} from "react-toastify";
 const Signup = () => {
+  const {signUpFunction} = useAuth();
   const initialValues = {
     username: "",
     email: "",
@@ -16,10 +19,18 @@ const Signup = () => {
       .min(6, "password must be at least 6 characters")
       .required("password is required"),
   });
-  const handleSubmit = () => {};
+  const handleSubmit = async (values) => {
+    try {
+      await signUpFunction(values);
+      console.log(values);
+    } catch (err) {
+      console.log("error during sign up", err);
+    }
+  };
   return (
     <div className="max-w-md mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
+      <ToastContainer />
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
